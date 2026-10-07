@@ -1,0 +1,166 @@
+{
+  "name": "3. Chatbot AI Web",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Anda adalah asisten FAQ spesialis pemasaran. Jawab hanya berdasarkan Google Sheets. Jika tidak ada data, sarankan hubungi tim support."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -64,
+        -16
+      ],
+      "id": "7c8e2a01-569b-4916-82ce-33b210f087c6",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        224
+      ],
+      "id": "150eb62f-7b98-478b-8ace-92fa2786f4fa",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "vchgdY3durBObGRG",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -352,
+        -16
+      ],
+      "id": "5f68a699-b236-4005-9085-d05e97beff7f",
+      "name": "When chat message received",
+      "webhookId": "284cc531-c0d6-48a2-86ca-71c75752dc42"
+    },
+    {
+      "parameters": {
+        "sessionKey": ""
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        32,
+        224
+      ],
+      "id": "31e284bb-4435-4f4f-ba6e-223358ef63b8",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1aJ2HlnUKJdV8l2wu9XQZlQ5wXg5kNGXJl8zKHiqItIo",
+          "mode": "list",
+          "cachedResultName": "04-06 Pertanyaan untuk studi kasus chatbot",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aJ2HlnUKJdV8l2wu9XQZlQ5wXg5kNGXJl8zKHiqItIo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aJ2HlnUKJdV8l2wu9XQZlQ5wXg5kNGXJl8zKHiqItIo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        192,
+        224
+      ],
+      "id": "71cefe74-46f9-4d9c-8a51-9ef94bb95198",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "34DDCIqrifka2vG1",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ba200444-a09c-4139-85ae-15bd91b08455",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dc96f10ae7dc95d3c138575ba243a0a167923dbcb524841d451aadf9135d5fb3"
+  },
+  "nodeGroups": [],
+  "id": "fBS47Nye3DREPrH7",
+  "tags": []
+}
