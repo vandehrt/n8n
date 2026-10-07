@@ -1,0 +1,260 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "a8a23dbd-28ba-4bef-9019-a46d72b49d6e",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -288,
+        80
+      ],
+      "webhookId": "4232eb1b-9532-4464-9428-01e703d15160"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f141903e-d4c8-4908-ad66-52a4432e3575",
+              "name": "chat",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2d160dcb-a289-43f4-bbd1-f7cc13c7ea53",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -64,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "32af0b35-2718-479b-8cef-1a69267d9071",
+              "leftValue": "={{ $json.chat }}",
+              "rightValue": "=SEO",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "d763e044-ccae-493c-87ac-cc3f2c7bf739",
+              "leftValue": "={{ $json.chat }}",
+              "rightValue": "=Email Marketing",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "f6313800-8bb4-4b77-bd50-d5a65c7e1d1c",
+              "leftValue": "={{ $json.chat }}",
+              "rightValue": "=CLV",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "c1593157-4715-4888-a5e6-d73038e5e6d2",
+              "leftValue": "={{ $json.chat }}",
+              "rightValue": "=Marketing Funnel",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "7edcd3ad-8146-40c1-b4a4-9dcec204aff5",
+              "leftValue": "={{ $json.chat }}",
+              "rightValue": "=B2B Marketing",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "97447cc6-25ea-4a91-b522-a7d6da6aa125",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        160,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chat }}",
+        "options": {
+          "systemMessage": "Anda adalah asisten FAQ spesialis pemasaran. Jawab hanya berdasarkan Google Sheets. Jika tidak ada data, sarankan hubungi tim support."
+        }
+      },
+      "id": "f38ed283-e588-476c-a951-91a5a3b15ba5",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        384,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "id": "c8a9a3e4-c188-4b85-9d16-8948daa1590f",
+      "name": "OpenRouter Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        320,
+        368
+      ],
+      "credentials": {
+        "openRouterApi": {
+          "id": "Mtb7dHvMHpfMwht7",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "e16a78a4-9a69-4b14-905e-355a01ea1310",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        480,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f0c2a71-8d4e-4b6a-9c1f-5e2d7a9b4c10",
+              "name": "output",
+              "type": "string",
+              "value": "Harap bertanya menggunakan salah satu contoh:\n1. Apa perbedaan SEO dan SEM?\n2. Cara mengukur Email Marketing?\n3. Apa itu CLV?\n4. Strategi Awareness Funnel?\n5. Peran Webinar B2B?"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6347747c-a4d7-4767-ae6a-e6418df297f8",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        -112
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5d63be77-2a7b-4d37-ba3e-935097ea25e4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8b190e458a541a52798f7904058f07128a2662d63f3fe2a188fe843d8c118c13"
+  },
+  "nodeGroups": [],
+  "id": "uHzHtLJIk02EblnZ",
+  "tags": []
+}
