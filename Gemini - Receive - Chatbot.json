@@ -1,0 +1,161 @@
+{
+  "name": "Gemini - Receive - Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "id": "a04c830b-a41d-4151-8bb3-cbc31eb72307",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        432,
+        -144
+      ],
+      "webhookId": "d81ade9d-7b23-40a1-a3c4-e61171a974fc"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Anda adalah asisten untuk menjawab pertanyaan tentang produk apa dan harganya. Anda boleh menentukan tugas selain produk dan harga. Anda harus menjawab menggunakan tools google sheets yang sudah saya sediakan."
+        }
+      },
+      "id": "206ec3e0-55dc-4635-b7f8-2229b09a7f00",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        656,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId }}"
+      },
+      "id": "e75f27ba-119d-4543-b766-4c0e50d1d7ca",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        720,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Gunakan tool ini untuk mengambil data produk dan harga dari Google Sheets. Tool ini sudah terhubung ke spreadsheet dan TIDAK memerlukan ID atau nama sheet dari pengguna.",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1jGupBkkhJcyoq00V4aEtjC9nz4PzT9UHj0GUVw641xA/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jGupBkkhJcyoq00V4aEtjC9nz4PzT9UHj0GUVw641xA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "d362fe87-d83a-4ee7-93fd-59ffc2ac49ef",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        80
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "34DDCIqrifka2vG1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        80
+      ],
+      "id": "362089f6-a947-46e2-948d-71de21556b78",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BYElmaOpJ3cUCrW7",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7c79da78-a74c-4728-9b87-bb0517ac9ac9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dc96f10ae7dc95d3c138575ba243a0a167923dbcb524841d451aadf9135d5fb3"
+  },
+  "nodeGroups": [],
+  "id": "t37eIoQikGcxm8CQ",
+  "tags": []
+}
